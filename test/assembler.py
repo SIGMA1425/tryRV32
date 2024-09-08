@@ -9,11 +9,15 @@ with open(OUTPUT_FILE, "w"):
     pass
 
 def main():
-    add(1, 0, 5)
-    add(2, 0, 8)
-    add(3, 1, 2)
-    add(4, 0, 2)
-    sub(5, 3, 4)
+    # addi(1, 0, 5)
+    # addi(2, 0, 8)
+    # add(3, 1, 2)
+    # addi(4, 0, 2)
+    # add(5, 3, 4)
+    for i in range(32):
+        addi(i, 0, i)
+    for i in range(32):
+        debug_a(i)
 
 
 def lui(dreg, imm):
@@ -37,6 +41,10 @@ def xor(rd, rs1, rs2):
 def addi(rd, rs1, imm):
     fimm = format(imm & 4095, '012b')
     inst = fimm + regs[rs1] + "000" + regs[rd] + "0010011"
+    output(inst, OUTPUT_FILE, oneline)
+
+def debug_a(rs1):
+    inst = "000000000000" + regs[rs1] + "00000000" + "0001011"
     output(inst, OUTPUT_FILE, oneline)
 
 def output(inst, filename, oneline=False):
