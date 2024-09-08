@@ -1,0 +1,75 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 9;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_000002d26de1bb80 .scope module, "tb_imem" "tb_imem" 2 2;
+ .timescale -9 -9;
+v000002d26dd3bbc0_0 .var "addr", 31 0;
+v000002d26dd3bda0_0 .net "data", 31 0, L_000002d26dd961e0;  1 drivers
+S_000002d26dce5930 .scope module, "imem" "imem" 2 6, 3 1 0, S_000002d26de1bb80;
+ .timescale -9 -9;
+    .port_info 0 /INPUT 32 "addr";
+    .port_info 1 /OUTPUT 32 "data";
+v000002d26dce5ac0_0 .net *"_ivl_0", 7 0, L_000002d26dd3be40;  1 drivers
+v000002d26dcc3970_0 .net *"_ivl_10", 31 0, L_000002d26dd3bee0;  1 drivers
+v000002d26de1b8e0_0 .net *"_ivl_12", 7 0, L_000002d26dd3bf80;  1 drivers
+L_000002d26dd3c908 .functor BUFT 1, C4<00000000000000000000000000000001>, C4<0>, C4<0>, C4<0>;
+v000002d26de1b980_0 .net/2u *"_ivl_14", 31 0, L_000002d26dd3c908;  1 drivers
+v000002d26dcf6850_0 .net *"_ivl_16", 31 0, L_000002d26dd3b8a0;  1 drivers
+v000002d26dcf68f0_0 .net *"_ivl_18", 7 0, L_000002d26dd3ba80;  1 drivers
+L_000002d26dd3c878 .functor BUFT 1, C4<00000000000000000000000000000011>, C4<0>, C4<0>, C4<0>;
+v000002d26dcf6990_0 .net/2u *"_ivl_2", 31 0, L_000002d26dd3c878;  1 drivers
+v000002d26dcf6a30_0 .net *"_ivl_4", 31 0, L_000002d26dd3bd00;  1 drivers
+v000002d26dcf6ad0_0 .net *"_ivl_6", 7 0, L_000002d26dd3b9e0;  1 drivers
+L_000002d26dd3c8c0 .functor BUFT 1, C4<00000000000000000000000000000010>, C4<0>, C4<0>, C4<0>;
+v000002d26dcf6b70_0 .net/2u *"_ivl_8", 31 0, L_000002d26dd3c8c0;  1 drivers
+v000002d26dd3bb20_0 .net "addr", 31 0, v000002d26dd3bbc0_0;  1 drivers
+v000002d26dd3b940_0 .net "data", 31 0, L_000002d26dd961e0;  alias, 1 drivers
+v000002d26dd3bc60 .array "memory", 256 0, 7 0;
+L_000002d26dd3be40 .array/port v000002d26dd3bc60, L_000002d26dd3bd00;
+L_000002d26dd3bd00 .arith/sum 32, v000002d26dd3bbc0_0, L_000002d26dd3c878;
+L_000002d26dd3b9e0 .array/port v000002d26dd3bc60, L_000002d26dd3bee0;
+L_000002d26dd3bee0 .arith/sum 32, v000002d26dd3bbc0_0, L_000002d26dd3c8c0;
+L_000002d26dd3bf80 .array/port v000002d26dd3bc60, L_000002d26dd3b8a0;
+L_000002d26dd3b8a0 .arith/sum 32, v000002d26dd3bbc0_0, L_000002d26dd3c908;
+L_000002d26dd3ba80 .array/port v000002d26dd3bc60, v000002d26dd3bbc0_0;
+L_000002d26dd961e0 .concat [ 8 8 8 8], L_000002d26dd3ba80, L_000002d26dd3bf80, L_000002d26dd3b9e0, L_000002d26dd3be40;
+    .scope S_000002d26dce5930;
+T_0 ;
+    %vpi_call 3 8 "$readmemh", "memory.txt", v000002d26dd3bc60 {0 0 0};
+    %end;
+    .thread T_0;
+    .scope S_000002d26de1bb80;
+T_1 ;
+    %vpi_call 2 12 "$dumpfile", "tb_imem.vcd" {0 0 0};
+    %vpi_call 2 13 "$dumpvars", 32'sb00000000000000000000000000000000, S_000002d26dce5930 {0 0 0};
+    %vpi_call 2 14 "$monitor", "addr: %x, data: %x", v000002d26dd3bbc0_0, v000002d26dd3bda0_0 {0 0 0};
+    %end;
+    .thread T_1;
+    .scope S_000002d26de1bb80;
+T_2 ;
+    %delay 0, 0;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v000002d26dd3bbc0_0, 0, 32;
+    %delay 10, 0;
+    %pushi/vec4 4, 0, 32;
+    %store/vec4 v000002d26dd3bbc0_0, 0, 32;
+    %delay 20, 0;
+    %pushi/vec4 8, 0, 32;
+    %store/vec4 v000002d26dd3bbc0_0, 0, 32;
+    %delay 30, 0;
+    %pushi/vec4 12, 0, 32;
+    %store/vec4 v000002d26dd3bbc0_0, 0, 32;
+    %end;
+    .thread T_2;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    ".\tb_imem.v";
+    ".\imem.v";
