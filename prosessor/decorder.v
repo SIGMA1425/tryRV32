@@ -7,10 +7,12 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, imm);
 
     parameter R_OPCODE     = 7'b0110011;
     parameter I_ALU_OPCODE = 7'b0010011;
+    parameter D_OPCODE     = 7'b0001011;
 
 
     assign rs1 = (inst[6:0] == R_OPCODE)?     inst[19:15]:  
                  (inst[6:0] == I_ALU_OPCODE)? inst[19:15]:
+                 (inst[6:0] == D_OPCODE)?     inst[19:15]:
                                               5'bZZZZZ;
 
     assign rs2 = (inst[6:0] == R_OPCODE)? inst[24:20]: 
