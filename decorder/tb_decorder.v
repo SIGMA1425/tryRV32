@@ -4,6 +4,7 @@ module tb_decorder();
     wire[4:0] rs1, rs2, rd;
     wire[3:0] alu_ctrl;
     wire w_en;
+    wire[31:0] imm;
 
     reg[31:0] memory[0:256];
 
@@ -13,7 +14,8 @@ module tb_decorder();
         .rs2(rs2),
         .rd(rd),
         .alu_ctrl(alu_ctrl),
-        .w_en(w_en)
+        .w_en(w_en),
+        .imm(imm)
     );
 
     initial begin
@@ -23,7 +25,7 @@ module tb_decorder();
     initial begin
         $dumpfile("tb_decorder.vcd");
         $dumpvars(0, decorder);
-        $monitor($stime, " inst = %b\n, rs1 = %b, rs2 = %b, rd = %b, alu_ctrl = %b, w_en = %d", inst, rs1, rs2, rd, alu_ctrl, w_en);
+        $monitor($stime, " inst = %b\n, rs1 = %b, rs2 = %b, rd = %b, alu_ctrl = %b, w_en = %d, imm = %x", inst, rs1, rs2, rd, alu_ctrl, w_en, imm);
     end
 
     initial begin
