@@ -1,15 +1,17 @@
-module processor(CLK, RST, rd, alu_ctrl, outdata_a, outdata_b);
+module processor(CLK, RST, rd, alu_ctrl);
     input CLK, RST;
 
     output[4:0] rd;
     output[3:0] alu_ctrl;
-    output[31:0] outdata_a, outdata_b;
 
     wire[31:0] inst, pc_inc, iaddr;
     wire[31:0] adder_in1, adder_in2;
     wire[4:0] rs1, rs2;
-    wire w_en;
+    wire w_en, op1_sel;
     wire[31:0] imm;
+    wire[31:0] alu_output;
+    wire[31:0] outdata_a, outdata_b;
+    wire[31:0] alu_input_a;
 
     pc pc(
         .CLK(CLK),
@@ -37,7 +39,8 @@ module processor(CLK, RST, rd, alu_ctrl, outdata_a, outdata_b);
         .rd(rd),
         .alu_ctrl(alu_ctrl),
         .w_en(w_en),
-        .imm(imm)
+        .imm(imm),
+        .op1_sel(op1_sel)
     );
 
     register register(
@@ -46,9 +49,24 @@ module processor(CLK, RST, rd, alu_ctrl, outdata_a, outdata_b);
         .inaddr_a(rs1),
         .inaddr_b(rs2),
         .inaddr_w(rd),
-        .indata_w(imm),
+        .indata_w(alu_output),
         .outdata_a(outdata_a),
         .outdata_b(outdata_b)
+    );
+
+    ALU ALU(
+        .input_a(alu_input_a),
+        .input_b(outdata_b),
+        .ctrl(alu_ctrl),
+        .out(alu_output),
+        .is_zero()
+    );
+
+    selector imm_selector(
+        .input_a(outdata_a),
+        .input_b(imm),
+        .ctrl(op1_sel),
+        .out(alu_input_a)
     );
 
 endmodule
