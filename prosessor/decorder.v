@@ -28,7 +28,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, imm, op1_sel);
                                                 32'h00000000;
 
     assign alu_ctrl = (inst[6:0] == R_OPCODE)?      {inst[30], inst[14:12]}: 
-                      (inst[6:0] == I_ALU_OPCODE)?  {inst[30], inst[14:12]}:
+                      (inst[6:0] == I_ALU_OPCODE)?  {1'b0, inst[14:12]}:
                                                     4'b0000;
 
     assign w_en = (inst[6:0] == R_OPCODE || inst[6:0] == I_ALU_OPCODE)? 1'b1: 1'b0;
