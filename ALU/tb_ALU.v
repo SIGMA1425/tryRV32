@@ -28,15 +28,15 @@ module tb_ALU();
         
         #10 input_a = 32'h00000004;
             input_b = 32'h00000008;
-            ctrl = 4'b1000;
+            ctrl = 4'b0100;
 
         #10 input_a = 32'h0000ffff;
             input_b = 32'h00000001;
-            ctrl = 4'b1000;
+            ctrl = 4'b0100;
 
         #10 input_a = 32'hffffffff;
-            input_b = 32'h00000001;
-            ctrl = 4'b1000;
+            input_b = 32'hffff0001;
+            ctrl = 4'b0100;
         
     end
 endmodule
