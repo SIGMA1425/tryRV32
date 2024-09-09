@@ -1,8 +1,8 @@
-module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, imm);
+module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, imm, op1_sel);
     input[31:0] inst;
     output[4:0] rs1, rs2, rd;
     output[3:0] alu_ctrl;
-    output w_en;
+    output w_en, op1_sel;
     output[31:0] imm;
 
     parameter R_OPCODE     = 7'b0110011;
@@ -32,5 +32,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, imm);
                                                     4'b0000;
 
     assign w_en = (inst[6:0] == R_OPCODE || inst[6:0] == I_ALU_OPCODE)? 1'b1: 1'b0;
+
+    assign op1_sel = (inst[6:0] == I_ALU_OPCODE)? 1'b1: 1'b0;
 
 endmodule
