@@ -19,14 +19,14 @@ module tb_processor();
     initial begin
         $dumpfile("tb_processor.vcd");
         $dumpvars(0, processor);
-        $monitor("CLK = %d, RST = %d, inst = %x\n\trd = %b, alu_ctrl = %b\n\trs1 = %b, rs2 = %b\n\talu_out = %x", 
-                    CLK, RST, processor.inst, rd, alu_ctrl, processor.decorder.rs1, processor.decorder.rs2, processor.ALU.out);
+        $monitor("CLK = %d, RST = %d, pc = %x, inst = %x\n\trd = %b, alu_ctrl = %b\n\trs1 = %b, rs2 = %b\n\talu_out = %x",
+                    CLK, RST, processor.iaddr, processor.inst, rd, alu_ctrl, processor.decorder.rs1, processor.decorder.rs2, processor.ALU.out);
     end
 
     initial begin
         #0 CLK = 0;
            RST = 0;
-        
+
         #10 RST = 1;
         #10 RST = 0;
         #(RATE * 12) $finish;

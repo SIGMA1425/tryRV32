@@ -7,11 +7,13 @@ module processor(CLK, RST, rd, alu_ctrl);
     wire[31:0] inst, pc_inc, iaddr;
     wire[31:0] adder_in1, adder_in2;
     wire[4:0] rs1, rs2;
-    wire w_en, op1_sel;
+    wire w_en, op1_sel, jump_en;
     wire[31:0] imm;
     wire[31:0] alu_output;
     wire[31:0] outdata_a, outdata_b;
     wire[31:0] alu_input_a;
+    wire[2:0] branch_ctrl;
+    wire[31:0] jump_offset;
 
     pc pc(
         .CLK(CLK),
@@ -20,12 +22,12 @@ module processor(CLK, RST, rd, alu_ctrl);
         .Q(iaddr)
     );
 
-    adder32 adder(
-        .a(iaddr),
-        .b(32'h00000004),
-        .s(pc_inc),
-        .c()
-    );
+    // adder32 adder(
+    //     .a(iaddr),
+    //     .b(32'h00000004),
+    //     .s(pc_inc),
+    //     .c()
+    // );
 
     imem imem(
         .addr(iaddr),
@@ -40,7 +42,10 @@ module processor(CLK, RST, rd, alu_ctrl);
         .alu_ctrl(alu_ctrl),
         .w_en(w_en),
         .imm(imm),
-        .op1_sel(op1_sel)
+        .op1_sel(op1_sel),
+        .branch_ctrl(branch_ctrl),
+        .jump_offset(jump_offset),
+        .jump_en(jump_en)
     );
 
     register register(
@@ -67,6 +72,16 @@ module processor(CLK, RST, rd, alu_ctrl);
         .input_b(imm),
         .ctrl(op1_sel),
         .out(alu_input_a)
+    );
+
+    branch branch(
+        .rsdata_a(outdata_a),
+        .rsdata_b(outdata_b),
+        .pc(iaddr),
+        .ctrl(branch_ctrl),
+        .next_pc(pc_inc),
+        .imm(jump_offset),
+        .jump_en(jump_en)
     );
 
 endmodule
