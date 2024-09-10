@@ -9,14 +9,18 @@ with open(OUTPUT_FILE, "w"):
     pass
 
 def main():
-    # addi(1, 0, 5)
+    addi(1, 0, 5)
+    addi(2, 0, 3)
+    slt(3, 1, 2)
+    slt(4, 2, 1)
+    sll(5, 1, 2)
     # addi(2, 0, 8)
     # add(3, 1, 2)
     # addi(4, 0, 2)
     # add(5, 3, 4)
-    for i in range(32):
-        addi(i, 0, i)
-    for i in range(32):
+    # for i in range(32):
+    #     addi(i, 0, i)
+    for i in range(5):
         debug_a(i)
 
 
@@ -43,6 +47,43 @@ def addi(rd, rs1, imm):
     inst = fimm + regs[rs1] + "000" + regs[rd] + "0010011"
     output(inst, OUTPUT_FILE, oneline)
 
+def sll(rd, rs1, rs2):
+    inst = "0000000" + regs[rs2] + regs[rs1] + "001" + regs[rd] + "0110011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
+def srl(rd, rs1, rs2):
+    inst = "0100000" + regs[rs2] + regs[rs1] + "101" + regs[rd] + "0110011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
+def sra(rd, rs1, rs2):
+    inst = "0100000" + regs[rs2] + regs[rs1] + "101" + regs[rd] + "0110011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
+def slli(rd, rs1, imm):
+    fimm = format(imm & 31, '05b')
+    inst = "0000000" + fimm + regs[rs1] + "001" + regs[rd] + "0010011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
+def srli(rd, rs1, imm):
+    fimm = format(imm & 31, '05b')
+    inst = "0000000" + fimm + regs[rs1] + "101" + regs[rd] + "0010011"
+    output(inst, OUTPUT_FILE, oneline)
+
+def srai(rd, rs1, imm):
+    fimm = format(imm & 31, '05b')
+    inst = "0100000" + fimm + regs[rs1] + "101" + regs[rd] + "0010011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
+def slt(rd, rs1, rs2):
+    inst = "0000000" + regs[rs2] + regs[rs1] + "010" + regs[rd] + "0110011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
 def debug_a(rs1):
     inst = "000000000000" + regs[rs1] + "00000000" + "0001011"
     output(inst, OUTPUT_FILE, oneline)
@@ -65,7 +106,7 @@ def output(inst, filename, oneline=False):
         else:
             for b in byte[::-1]:
                 f.write(b + '\n')
-    
+
 
 
 if __name__ == "__main__":
