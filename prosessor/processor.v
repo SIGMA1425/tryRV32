@@ -86,7 +86,7 @@ module processor(CLK, RST, rd, alu_ctrl);
         .rsdata_b(outdata_b),
         .pc(iaddr),
         .ctrl(branch_ctrl),
-        .next_pc(pc_inc),
+        .res_pc(pc_inc),
         .imm(jump_offset),
         .jump_en(jump_en)
     );

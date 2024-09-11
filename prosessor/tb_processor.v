@@ -30,7 +30,7 @@ module tb_processor();
 
         #10 RST = 1;
         #10 RST = 0;
-        #(RATE * 100) 
+        #(RATE * 10) 
         file = $fopen("register.result", "w");
         for(i = 0; i < 32; i++)begin
             $fwrite(file, "%x\n", processor.register.reg_data[i]);
