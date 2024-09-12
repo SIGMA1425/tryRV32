@@ -4,7 +4,7 @@ module processor(CLK, RST, rd, alu_ctrl);
     output[4:0] rd;
     output[3:0] alu_ctrl;
 
-    wire[31:0] inst, pc_inc, iaddr;
+    wire[31:0] inst, pc_inc, iaddr, next_pc;
     wire[31:0] adder_in1, adder_in2;
     wire[4:0] rs1, rs2;
     wire w_en,  mw_en, op1_sel, jump_en;
@@ -18,20 +18,21 @@ module processor(CLK, RST, rd, alu_ctrl);
     wire[31:0] dmem_out;
     wire maddr_sel;
     wire[31:0] reg_wdata;
+    wire comp_res;
 
     pc pc(
         .CLK(CLK),
         .RST(RST),
-        .D(pc_inc),
+        .D(next_pc),
         .Q(iaddr)
     );
 
-    // adder32 adder(
-    //     .a(iaddr),
-    //     .b(32'h00000004),
-    //     .s(pc_inc),
-    //     .c()
-    // );
+    adder32 adder_for_next_pc(
+        .a(iaddr),
+        .b(32'h00000004),
+        .s(pc_inc),
+        .c()
+    );
 
     imem imem(
         .addr(iaddr),
@@ -67,11 +68,18 @@ module processor(CLK, RST, rd, alu_ctrl);
     );
 
     ALU ALU(
-        .input_a(outdata_a),
+        .input_a(alu_input_a),
         .input_b(alu_input_b),
         .ctrl(alu_ctrl),
         .out(alu_output),
         .is_zero()
+    );
+
+    selector input_alu_a_sel(
+        .input_a(outdata_a),
+        .input_b(iaddr),
+        .ctrl(jump_en),
+        .out(alu_input_a)
     );
 
     selector imm_selector(
@@ -81,15 +89,15 @@ module processor(CLK, RST, rd, alu_ctrl);
         .out(alu_input_b)
     );
 
-    branch branch(
-        .rsdata_a(outdata_a),
-        .rsdata_b(outdata_b),
-        .pc(iaddr),
-        .ctrl(branch_ctrl),
-        .res_pc(pc_inc),
-        .imm(jump_offset),
-        .jump_en(jump_en)
-    );
+    // branch branch(
+    //     .rsdata_a(outdata_a),
+    //     .rsdata_b(outdata_b),
+    //     .pc(iaddr),
+    //     .ctrl(branch_ctrl),
+    //     .res_pc(pc_inc),
+    //     .imm(jump_offset),
+    //     .jump_en(jump_en)
+    // );
 
     dmem dmem(
         .CLK(CLK),
@@ -106,5 +114,20 @@ module processor(CLK, RST, rd, alu_ctrl);
         .ctrl(maddr_sel),
         .out(reg_wdata)
     );
+
+    judge judge(
+        .rs1data(outdata_a),
+        .rs2data(outdata_b),
+        .ctrl(branch_ctrl),
+        .result(comp_res)
+    );
+
+    selector pc_sel(
+        .input_a(pc_inc),
+        .input_b(alu_output),
+        .ctrl(comp_res & jump_en),
+        .out(next_pc)
+    );
+
 
 endmodule

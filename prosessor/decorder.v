@@ -39,21 +39,24 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel, imm, op1_s
                  (inst[6:0] == I_ALU_OPCODE)?   {{20{inst[31]}}, inst[31:20]}:
                  (inst[6:0] == S_OPCODE)?       {{20{inst[31]}}, inst[31:25], inst[11:7]}:
                  (inst[6:0] == I_OPCODE)?      {{20{inst[31]}}, inst[31:20]}:
+                 (inst[6:0] == B_OPCODE)?      {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8], 1'b0}:
                                                 32'h00000000;
 
     assign alu_ctrl = (inst[6:0] == R_OPCODE)?      {inst[30], inst[14:12]}:
+                      (inst[6:0] == B_OPCODE)?      4'b0000:
                       (inst[6:0] == I_OPCODE)?      4'b0000:
                       (inst[6:0] == I_ALU_OPCODE)?  {1'b0, inst[14:12]}:
                                                     4'b0000;
 
     assign w_en = (inst[6:0] == R_OPCODE)?     1'b1:
-                  (inst[6:0] == I_ALU_OPCODE)? 1'b1: 
+                  (inst[6:0] == I_ALU_OPCODE)? 1'b1:
                   (inst[6:0] == S_OPCODE)?     1'b0:
                   (inst[6:0] == I_OPCODE)?     1'b1:
                                                1'b0;
 
     assign op1_sel = (inst[6:0] == I_ALU_OPCODE)? 1'b1:
                      (inst[6:0] == I_OPCODE)?     1'b1:
+                     (inst[6:0] == B_OPCODE)?     1'b1:
                      (inst[6:0] == S_OPCODE)?     1'b1:
                                                   1'b0;
 
@@ -68,6 +71,6 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel, imm, op1_s
     assign dmem_ctrl = (inst[6:0] == I_OPCODE)? inst[14:12]:
                       (inst[6:0] == S_OPCODE)? inst[14:12]:
                                                 3'b000;
-                                    
+
 
 endmodule

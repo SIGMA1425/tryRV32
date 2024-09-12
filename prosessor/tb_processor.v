@@ -20,8 +20,8 @@ module tb_processor();
     initial begin
         $dumpfile("tb_processor.vcd");
         $dumpvars(0, processor);
-        $monitor("CLK = %d, RST = %d, pc = %x, inst = %x\n\trd = %b, alu_ctrl = %b\n\trs1 = %b, rs2 = %b\n\talu_out = %x, reg_wdata = %x\n\tmw_en = %b, dmem_wdata = %x, w_en = %b",
-                    CLK, RST, processor.iaddr, processor.inst, rd, alu_ctrl, processor.decorder.rs1, processor.decorder.rs2, processor.ALU.out, processor.reg_wdata, processor.mw_en, processor.outdata_b, processor.w_en);
+        $monitor("CLK = %d, RST = %d, pc = %x, inst = %x\n\trd = %b, alu_ctrl = %b\n\trs1 = %b, rs2 = %b\n\talu_out = %x, reg_wdata = %x\n\tmw_en = %b, dmem_wdata = %x, w_en = %b, imm = %x",
+                    CLK, RST, processor.iaddr, processor.inst, rd, alu_ctrl, processor.decorder.rs1, processor.decorder.rs2, processor.ALU.out, processor.reg_wdata, processor.mw_en, processor.outdata_b, processor.w_en, processor.imm);
     end
 
     initial begin
@@ -30,7 +30,7 @@ module tb_processor();
 
         #10 RST = 1;
         #10 RST = 0;
-        #(RATE * 10) 
+        #(RATE * 10)
         file = $fopen("register.result", "w");
         for(i = 0; i < 32; i++)begin
             $fwrite(file, "%x\n", processor.register.reg_data[i]);
