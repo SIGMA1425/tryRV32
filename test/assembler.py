@@ -4,27 +4,22 @@ for i in range(32):
     regs.append(format(i, '05b'))
 
 oneline = False
+little_endian = True
 OUTPUT_FILE = "./memory.txt"
 with open(OUTPUT_FILE, "w"):
     pass
 
 def main():
+    # for i in range(1, 32):
+    #     addi(i, 0, 1)
+    
     addi(1, 0, 5)
-    addi(2, 0, 5)
-    slt(3, 1, 2)
-    slt(4, 2, 1)
-    sll(5, 1, 2)
-    beq(1, 2, 8)
+    bne(1, 1, 8)
     addi(6, 0, 10)
-    addi(6, 0, 16)
-    # addi(2, 0, 8)
-    # add(3, 1, 2)
-    # addi(4, 0, 2)
-    # add(5, 3, 4)
-    # for i in range(32):
-    #     addi(i, 0, i)
-    for i in range(7):
-        debug_a(i)
+    addi(5, 0, -10)
+    # lb(20, 0, 0)
+    # lh(20, 0, 3)
+    # lw(20, 10, -3)
 
 
 
@@ -111,6 +106,45 @@ def branch(rs1, rs2, imm, funct):
     inst = fimm[0] + regs[rs2] + regs[rs1] + funct + fimm[8:12] + fimm[1] + "1100011"
     output(inst, OUTPUT_FILE, oneline)
 
+def bne(rs1, rs2, imm):
+    fimm = format(imm & 8191, '013b')
+    inst = fimm[0] + regs[rs2] + regs[rs1] + "001" + fimm[8:12] + fimm[1] + "1100011"
+    output(inst, OUTPUT_FILE, oneline)
+
+
+def lb(rd, rs1, imm):
+    load(rd, rs1, imm, "000")
+
+def lh(rd, rs1, imm):
+    load(rd, rs1, imm, "001")
+
+def lw(rd, rs1, imm):
+    load(rd, rs1, imm, "010")
+
+def lbu(rd, rs1, imm):
+    load(rd, rs1, imm, "100")
+
+def lhu(rd, rs1, imm):
+    load(rd, rs1, imm, "101")
+
+def load(rd, rs1, imm, funct):
+    fimm = format(imm & 4095, '012b')
+    inst = fimm + regs[rs1] + funct + regs[rd] + "0000011"
+    output(inst, OUTPUT_FILE, oneline)
+
+def sb(rs1, rs2, imm):
+    store(rs1, rs2, imm, "000")
+
+def sh(rs1, rs2, imm):
+    store(rs1, rs2, imm, "001")
+
+def sw(rs1, rs2, imm):
+    store(rs1, rs2, imm, "010")
+
+def store(rs1, rs2, imm, funct):
+    fimm = format(imm & 4095, '012b')
+    inst = fimm[0:7] + regs[rs2] + regs[rs1] + funct + fimm[7:12] + "0100011"
+    output(inst, OUTPUT_FILE, oneline)
 
 def debug_a(rs1):
     inst = "000000000000" + regs[rs1] + "00000000" + "0001011"
@@ -128,11 +162,15 @@ def output(inst, filename, oneline=False):
     byte.append(inst_hex[6:8])
     print(byte)
 
+    if little_endian:
+        rev = -1
+    else:
+        rev = 1
     with open(filename, "a") as f:
         if oneline:
-            f.write("".join(byte[::-1]) + '\n')
+            f.write("".join(byte[::rev]) + '\n')
         else:
-            for b in byte[::-1]:
+            for b in byte[::rev]:
                 f.write(b + '\n')
 
 
