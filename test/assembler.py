@@ -27,10 +27,20 @@ def main():
         debug_a(i)
 
 
+
 def lui(dreg, imm):
-    simm = (imm << 12) & 4294967295
-    fimm = format(simm, '020b')
+    fimm = format(imm & 1048575, '020b')
     inst = fimm + regs[dreg] + "0110111"
+    output(inst, OUTPUT_FILE, oneline)
+
+def auipc(rd, imm):
+    fimm = format(imm & 1048575, '020b')
+    inst = fimm + regs[rd] + "0010111"
+    output(inst, OUTPUT_FILE, oneline)
+
+def jal(rd, imm):
+    fimm = format(imm & 1048575, '020b')
+    inst = fimm[0] + fimm[10:20] + fimm[9] + fimm[1:9] + regs[rd] + "1101111"
     output(inst, OUTPUT_FILE, oneline)
 
 def add(rd, rs1, rs2):

@@ -18,6 +18,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
     parameter U_OPCODE_LUI   = 7'b0110111;
     parameter U_OPCODE_AUIPC = 7'b0010111;
     parameter J_OPCODE     = 7'b1101111;
+    parameter I_OPCODE_JAL = 7'b1100111;
 
 
     assign rs1 = (inst[6:0] == R_OPCODE)?     inst[19:15]:
@@ -26,6 +27,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                  (inst[6:0] == D_OPCODE)?     inst[19:15]:
                  (inst[6:0] == I_OPCODE)?     inst[19:15]:
                  (inst[6:0] == S_OPCODE)?     inst[19:15]:
+                 (inst[6:0] == I_OPCODE_JAL)? inst[19:15]:
                  (inst[6:0] == U_OPCODE_LUI)? 5'b00000:
                                               5'bZZZZZ;
 
@@ -41,6 +43,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                  (inst[6:0] == U_OPCODE_LUI)?   inst[11:7]:
                  (inst[6:0] == U_OPCODE_AUIPC)? inst[11:7]:
                  (inst[6:0] == J_OPCODE)?       inst[11:7]:
+                 (inst[6:0] == I_OPCODE_JAL)?   inst[11:7]:
                                                 5'b00000;
 
     assign imm = (inst[6:0] == R_OPCODE)?       32'h00000000:
@@ -50,6 +53,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                  (inst[6:0] == B_OPCODE)?      {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8], 1'b0}:
                  (inst[6:0] == U_OPCODE_LUI)?   {inst[31:12], 12'h000}:
                  (inst[6:0] == U_OPCODE_AUIPC)? {inst[31:12], 12'h000}:
+                 (inst[6:0] == I_OPCODE_JAL)?   inst[31:20]:
                  (inst[6:0] == J_OPCODE)?       {{11{inst[31]}}, inst[31], inst[19:12], inst[20], inst[30:21], 1'b0}:
                                                 32'h00000000;
 
@@ -76,16 +80,19 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                      (inst[6:0] == U_OPCODE_LUI)? 1'b1:
                      (inst[6:0] == U_OPCODE_AUIPC)? 1'b1:
                      (inst[6:0] == J_OPCODE)?     1'b1:
+                     (inst[6:0] == I_OPCODE_JAL)? 1'b1:
                                                   1'b0;
 
     assign branch_ctrl = (inst[6:0] == B_OPCODE)? {1'b0, inst[14:12]}:
                          (inst[6:0] == J_OPCODE)? 4'b1000:
+                         (inst[6:0] == I_OPCODE_JAL)? 4'b1000:
                                                   4'b0000;
     assign jump_offset = (inst[6:0] == B_OPCODE)? {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8], 1'b0}:
                                                     32'h00000000;
 
     assign jump_en = (inst[6:0] == B_OPCODE)? 1'b0:
                      (inst[6:0] == J_OPCODE)? 1'b1:
+                     (inst[6:0] == I_OPCODE_JAL)? 1'b1:
                                               1'b0;
 
     assign mw_en = (inst[6:0] == S_OPCODE)? 1'b1: 1'b0;
@@ -100,6 +107,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                                                     1'b0;
 
     assign pc_w_en = (inst[6:0] == J_OPCODE)? 1'b1:
+                     (inst[6:0] == I_OPCODE_JAL)? 1'b1:
                                               1'b0;
 
 
