@@ -71,6 +71,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                   (inst[6:0] == U_OPCODE_LUI)? 1'b1:
                   (inst[6:0] == U_OPCODE_AUIPC)? 1'b1:
                   (inst[6:0] == J_OPCODE)?     1'b1:
+                  (inst[6:0] == I_OPCODE_JAL)? 1'b1:
                                                1'b0;
 
     assign op1_sel = (inst[6:0] == I_ALU_OPCODE)? 1'b1:
