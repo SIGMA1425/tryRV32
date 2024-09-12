@@ -88,8 +88,17 @@ def slt(rd, rs1, rs2):
 
 
 def beq(rs1, rs2, imm):
+    branch(rs1, rs2, imm, "000")
+
+def bne(rs1, rs2, imm):
+    branch(rs1, rs2, imm, "001")
+
+def blt(rs1, rs2, imm):
+    branch(rs1, rs2, imm, "100")
+
+def branch(rs1, rs2, imm, funct):
     fimm = format(imm & 8191, '013b')
-    inst = fimm[0] + regs[rs2] + regs[rs1] + "000" + fimm[8:12] + fimm[1] + "1100011"
+    inst = fimm[0] + regs[rs2] + regs[rs1] + funct + fimm[8:12] + fimm[1] + "1100011"
     output(inst, OUTPUT_FILE, oneline)
 
 
