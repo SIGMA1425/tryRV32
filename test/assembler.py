@@ -13,10 +13,12 @@ def main():
     # for i in range(1, 32):
     #     addi(i, 0, 1)
     
-    addi(1, 0, 5)
-    bne(1, 1, 8)
-    addi(6, 0, 10)
-    addi(5, 0, -10)
+    addi(1, 0, 1)
+    jalr(6, 0, 12)
+    addi(2, 0, 2)
+    addi(3, 0, 3)
+    addi(4, 0, 4)
+    addi(5, 0, 5)
     # lb(20, 0, 0)
     # lh(20, 0, 3)
     # lw(20, 10, -3)
@@ -36,6 +38,11 @@ def auipc(rd, imm):
 def jal(rd, imm):
     fimm = format(imm & 1048575, '020b')
     inst = fimm[0] + fimm[10:20] + fimm[9] + fimm[1:9] + regs[rd] + "1101111"
+    output(inst, OUTPUT_FILE, oneline)
+
+def jalr(rd, rs1, imm):
+    fimm = format(imm & 1048575, '020b')
+    inst = fimm + regs[rs1] + "000" + regs[rd] + "1100111"
     output(inst, OUTPUT_FILE, oneline)
 
 def add(rd, rs1, rs2):
