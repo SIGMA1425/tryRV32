@@ -12,13 +12,15 @@ module processor(CLK, RST, rd, alu_ctrl);
     wire[31:0] alu_output;
     wire[31:0] outdata_a, outdata_b;
     wire[31:0] alu_input_a, alu_input_b;
-    wire[2:0] branch_ctrl;
+    wire[3:0] branch_ctrl;
     wire[31:0] jump_offset;
     wire[2:0] dmem_ctrl;
     wire[31:0] dmem_out;
-    wire maddr_sel;
+    wire maddr_sel, pc_in_alu;
     wire[31:0] reg_wdata;
     wire comp_res;
+    wire pc_w_en;
+    wire[31:0] alu_or_dmem;
 
     pc pc(
         .CLK(CLK),
@@ -53,7 +55,9 @@ module processor(CLK, RST, rd, alu_ctrl);
         .jump_en(jump_en),
         .mw_en(mw_en),
         .maddr_sel(maddr_sel),
-        .dmem_ctrl(dmem_ctrl)
+        .dmem_ctrl(dmem_ctrl),
+        .pc_sel(pc_in_alu),
+        .pc_w_en(pc_w_en)
     );
 
     register register(
@@ -78,7 +82,7 @@ module processor(CLK, RST, rd, alu_ctrl);
     selector input_alu_a_sel(
         .input_a(outdata_a),
         .input_b(iaddr),
-        .ctrl(jump_en),
+        .ctrl(pc_in_alu),
         .out(alu_input_a)
     );
 
@@ -112,7 +116,7 @@ module processor(CLK, RST, rd, alu_ctrl);
         .input_a(alu_output),
         .input_b(dmem_out),
         .ctrl(maddr_sel),
-        .out(reg_wdata)
+        .out(alu_or_dmem)
     );
 
     judge judge(
@@ -127,6 +131,13 @@ module processor(CLK, RST, rd, alu_ctrl);
         .input_b(alu_output),
         .ctrl(comp_res & jump_en),
         .out(next_pc)
+    );
+
+    selector pc_or_alu(
+        .input_a(alu_or_dmem),
+        .input_b(pc_inc),
+        .ctrl(pc_w_en),
+        .out(reg_wdata)
     );
 
 
