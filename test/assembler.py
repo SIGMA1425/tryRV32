@@ -12,13 +12,10 @@ with open(OUTPUT_FILE, "w"):
 def main():
     addi(1, 0, 8)
     addi(2, 0, 5)
-    ebreak()
     addi(3, 0, 3)
-    slt(3, 1, 2)
-    slt(4, 2, 1)
-    sll(5, 1, 2)
-    beq(1, 2, 8)
-    addi(6, 0, 10)
+    FENCE()
+    addi(4, 0, 9)
+    addi(5, 0, 10)
     addi(6, 0, 16)
     # addi(2, 0, 8)
     # add(3, 1, 2)
@@ -59,6 +56,9 @@ def ecall():
 def ebreak():
     inst = "000000000001000000000000" + "1110011"
     output(inst, OUTPUT_FILE, oneline)
+
+def FENCE():
+    inst = "000000000000000000000000" + "0001111"
 
 
 def add(rd, rs1, rs2):

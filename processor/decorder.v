@@ -20,6 +20,7 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
     parameter J_OPCODE     = 7'b1101111;
     parameter I_OPCODE_JAL = 7'b1100111;
     parameter E_OPCODE     = 7'b1110011;
+    parameter FENCE        = 7'b0001111;
 
 
     assign rs1 = (inst[6:0] == R_OPCODE)?     inst[19:15]:
@@ -31,11 +32,13 @@ module decorder(inst, rs1, rs2, rd, alu_ctrl, w_en, mw_en, maddr_sel,
                  (inst[6:0] == I_OPCODE_JAL)? inst[19:15]:
                  (inst[6:0] == U_OPCODE_LUI)? 5'b00000:
                  (inst[6:0] == E_OPCODE)?     5'b00000:
+                 (inst[6:0] == FENCE)?        5'b0000:
                                               5'bZZZZZ;
 
     assign rs2 = (inst[6:0] == R_OPCODE)? inst[24:20]:
                  (inst[6:0] == B_OPCODE)? inst[24:20]:
                  (inst[6:0] == S_OPCODE)? inst[24:20]:
+                 (inst[6:0] == FENCE)?    5'b00000:
                                           5'b00000;
 
 
