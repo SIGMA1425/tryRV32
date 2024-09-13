@@ -11,8 +11,9 @@ with open(OUTPUT_FILE, "w"):
 
 def main():
     addi(1, 0, 8)
-    jalr(10, 1, 4)
     addi(2, 0, 5)
+    ebreak()
+    addi(3, 0, 3)
     slt(3, 1, 2)
     slt(4, 2, 1)
     sll(5, 1, 2)
@@ -49,6 +50,16 @@ def jalr(rd, rs1, imm):
     fimm = format(imm & 4095, '012b')
     inst = fimm + regs[rs1] + "000" + regs[rd] + "1100111"
     output(inst, OUTPUT_FILE, oneline)
+
+
+def ecall():
+    inst = "000000000000000000000000" + "1110011"
+    output(inst, OUTPUT_FILE, oneline)
+
+def ebreak():
+    inst = "000000000001000000000000" + "1110011"
+    output(inst, OUTPUT_FILE, oneline)
+
 
 def add(rd, rs1, rs2):
     inst = "0000000" + regs[rs2] + regs[rs1] + "000" + regs[rd] + "0110011"
