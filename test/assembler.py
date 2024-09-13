@@ -10,18 +10,23 @@ with open(OUTPUT_FILE, "w"):
     pass
 
 def main():
-    # for i in range(1, 32):
-    #     addi(i, 0, 1)
-    
-    addi(1, 0, 1)
-    jalr(6, 0, 12)
-    addi(2, 0, 2)
-    addi(3, 0, 3)
-    addi(4, 0, 4)
-    addi(5, 0, 5)
-    # lb(20, 0, 0)
-    # lh(20, 0, 3)
-    # lw(20, 10, -3)
+    addi(1, 0, 8)
+    jalr(10, 1, 4)
+    addi(2, 0, 5)
+    slt(3, 1, 2)
+    slt(4, 2, 1)
+    sll(5, 1, 2)
+    beq(1, 2, 8)
+    addi(6, 0, 10)
+    addi(6, 0, 16)
+    # addi(2, 0, 8)
+    # add(3, 1, 2)
+    # addi(4, 0, 2)
+    # add(5, 3, 4)
+    # for i in range(32):
+    #     addi(i, 0, i)
+    for i in range(7):
+        debug_a(i)
 
 
 
@@ -41,7 +46,7 @@ def jal(rd, imm):
     output(inst, OUTPUT_FILE, oneline)
 
 def jalr(rd, rs1, imm):
-    fimm = format(imm & 1048575, '020b')
+    fimm = format(imm & 4095, '012b')
     inst = fimm + regs[rs1] + "000" + regs[rd] + "1100111"
     output(inst, OUTPUT_FILE, oneline)
 
